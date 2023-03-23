@@ -15,5 +15,8 @@ export surface_saddleflat
 export visualize_contour
 export my_AdaBelief
 export my_sgdm
+export my_Adam
+export my_Adamax
+export my_AdaBeliefmax
 
 end

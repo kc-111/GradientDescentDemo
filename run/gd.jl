@@ -5,12 +5,13 @@ using ProgressMeter
 using Plots
 
 # start = [0.; 0.1] # Himmelblau
-# start = [-2.5; 1.] # Saddle flat
+# start = [2.5; 5.0] # Saddle flat
 # start = [-2.0; -2.5] # Himmelblau
 # start = [-2.5; -5.5] # Slanted ellipse
 # start = [0.1; 5.] # Rosenbrock
-start = [2.4; 5.] # Rosenbrock 2
+# start = [2.4; 5.] # Rosenbrock 2
 # start = [2.2; 5.] # Rosenbrock 3
+start = [-2.5; 0.0] # Rosenbrock 4
 
 # Create objective surface
 # surface_ellipse, surface_rosenbrock (log), surface_himmelblau (log), surface_saddleflat
@@ -28,9 +29,11 @@ my_surface = (grid_points, grid_points, my_surface)
 # Initialize optimizer
 numiters = 200
 my_opts = []
-push!(my_opts, my_sgdm(start, 0.1; β=0.0))
-push!(my_opts, my_sgdm(start, 0.1; β=0.9))
-push!(my_opts, my_AdaBelief(start, 0.1; β=(0.9, 0.999)))
+push!(my_opts, my_sgdm(start, 0.01; β=0.9))
+push!(my_opts, my_AdaBelief(start, 0.5; β=(0.95, 0.999)))
+push!(my_opts, my_Adam(start, 0.5; β=(0.95, 0.999)))
+push!(my_opts, my_Adamax(start, 1.0; β=(0.95, 0.999)))
+push!(my_opts, my_AdaBeliefmax(start, 1.0; β=(0.95, 0.999)))
 θs = zeros(length(my_opts), 2)
 for i=1:length(my_opts)
     θs[i, :] = start
@@ -45,7 +48,7 @@ for i=1:numiters
 
     for j=1:size(my_opts)[1]
         gs = gradient(θs[j, :]) do θ # Compute gradient
-            _loss = surface_ellipse(θ...)
+            _loss = my_obj(θ...)
             Zygote.ignore_derivatives() do
                 trajectory_opts[i, j, :] = [θ[1], θ[2], _loss]
             end

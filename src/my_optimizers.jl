@@ -130,6 +130,49 @@ function (optstate::my_Adamax)(Δ::AbstractArray, θ::AbstractArray)
 end
 
 """
+    AdaBeliefmax optimiser implemented by me.
+
+# Arguments
+- `θ::AbstractArray`: Parameters
+- `α::Float64`: Learning rate
+- `β::Tuple{Float64, Float64}`: Smoothing parameters
+- `λ1::Float64`: Weight decay L1
+- `λ2::Float64`: Weight decay L2
+- `ϵ::Float64`: Denominator to prevent division by 0
+"""
+mutable struct my_AdaBeliefmax <: Function
+    α::Float64 # learning rate
+    β::Tuple{Float64, Float64} # Smoothing parameters
+    ϵ::Float64 # Needed to prevent explosion
+    m::AbstractArray # Exponential moving average of gradient
+    s::AbstractArray # Exponential moving average of (gradient - momentum)^2
+    λ1::Float64 # Decoupled weight decay L1
+    λ2::Float64 # Decoupled weight decay L2
+    t::Float64 # Current iteration
+end
+
+my_AdaBeliefmax(
+    θ::AbstractArray,
+    α::Float64;
+    β::Tuple{Float64, Float64} = (0.95, 0.999),
+    λ1::Float64 = 0.0,
+    λ2::Float64 = 0.0,
+    ϵ::Float64 = 1e-16
+) = my_AdaBeliefmax(α, β, ϵ, zero(θ), zero(θ), λ1, λ2, 0.0)
+
+function (optstate::my_AdaBeliefmax)(Δ::AbstractArray, θ::AbstractArray) 
+    # Δ is gradient, θ is parameters, η is schedule multiplier for learning rate and momentum beta1.
+    optstate.t += 1
+    @. optstate.m = optstate.β[1]*optstate.m + (1 - optstate.β[1])*Δ # Mean
+    @. optstate.s = max(optstate.β[2]*optstate.s, abs(Δ - optstate.m)) # Infinity norm
+    # Bias correction
+    m_corr = @. optstate.m/(1 - optstate.β[1]^optstate.t)
+    descent = @. optstate.α*(m_corr/optstate.s + optstate.λ1*sign(θ) + optstate.λ2*θ) # Elastic Net
+
+    return descent
+end
+
+"""
     Standard gradient descent with momentum
 
 # Arguments

@@ -27,33 +27,7 @@
   <img src="opt_traj_unconstr.gif" alt="animated" />
 </p>
 
-
-## Flat Valley with Equality Constraints
+## Constrained Optimization
 <p align="center">
-  <img src="optimiser_trajectory1.gif" alt="animated" />
-</p>
-
-## Rosenbrock with Equality Constraints
-<p align="center">
-  <img src="optimiser_trajectory2.gif" alt="animated" />
-</p>
-
-## Beale with Equality Constraints
-<p align="center">
-  <img src="optimiser_trajectory3.gif" alt="animated" />
-</p>
-
-## Ellipse with Equality Constraints
-<p align="center">
-  <img src="optimiser_trajectory4.gif" alt="animated" />
-</p>
-
-## Rosenbrock with Inequality Constraints
-<p align="center">
-  <img src="optimiser_trajectory5.gif" alt="animated" />
-</p>
-
-## Rosenbrock with Inequality and Equality Constraints
-<p align="center">
-  <img src="optimiser_trajectory6.gif" alt="animated" />
+  <img src="optimiser_trajectory.gif" alt="animated" />
 </p>
