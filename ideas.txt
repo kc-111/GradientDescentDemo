@@ -1,0 +1,5 @@
+Suppose both solvers are accurate, the difference is due to floating point errors
+Test 1: get unique costates for each solver and see what happens
+    -How different are the optimized costates?
+    -Are the curves for the actual states very different?
+Test 2: 
